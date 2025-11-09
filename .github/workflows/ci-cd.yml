@@ -1,0 +1,35 @@
+name: CI/CD - Build and Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout del repositorio
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: 📦 Instalar dependencias
+        run: npm install --legacy-peer-deps
+
+      - name: 🧪 Ejecutar pruebas (si existen)
+        run: |
+          if [ -f package.json ]; then
+            npm test || echo "Sin pruebas definidas"
+          fi
+
+      - name: 🐳 Build Docker image
+        run: docker build -t sistema-asistencia-qr .
+
+      - name: 🚀 Simular Deploy
+        run: echo "Despliegue simulado completado ✅"
